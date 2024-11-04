@@ -1,7 +1,7 @@
 
 //*********************************************************************************************************************************************
 // Add communication nRF24L01P. Fixed RF channel, fixed address.
-// Support for Arduino-based receivers and RF24 libraries from this repository https://github.com/stanekTM/RX_nRF24L01_Telemetry_Motor_Servo
+// Support for Arduino-based receivers and RF24 libraries from this repository https://github.com/stanekTM/RX_nRF24_Motor_Servo
 // Thanks to "Phil_G" http://www.singlechannel.co.uk philg@talk21.com for the calibration and reverse routine I used in the code.
 // Calibration:
 // Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.

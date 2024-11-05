@@ -26,7 +26,7 @@ A0 - joystick 1
 A1 - joystick 2
 A2 - joystick 3
 A3 - joystick 4
-A4 - potentiometer/switch 5
+A4 - potentiometer 5
 
 D2 - LED
 D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)

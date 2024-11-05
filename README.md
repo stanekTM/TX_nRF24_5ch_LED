@@ -22,11 +22,11 @@ Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and rev
 
 ## Arduino pins
 ```
-A0 - pot 1
-A1 - pot 2
-A2 - pot 3
-A3 - pot 4
-A4 - pot 5
+A0 - joystick 1
+A1 - joystick 2
+A2 - joystick 3
+A3 - joystick 4
+A4 - potentiometer/switch 5
 
 D2 - LED
 D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)

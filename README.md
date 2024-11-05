@@ -1,4 +1,4 @@
-# RC TX nRF24 5ch LED
+# RC transmitter for cars, ships, tanks and simple model airplanes
 Simple surface 5 channel RC transmitter for cars, boats and tanks.
 The hardware includes a low-cost nRF24L01+ transceiver and an ATmega328P processor.
 It includes telemetry of the monitored voltage of the receiver using a flashing LED indication.

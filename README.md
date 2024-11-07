@@ -3,7 +3,7 @@ Simple surface 5 channel RC transmitter for cars, boats and tanks.
 The hardware includes nRF24L01+ transceiver and ATmega328P processor.
 It includes telemetry of the monitored voltage of the receiver using a flashing LED indication.
 
-This RC transmitter works with RC receiver from my repository [RX_nRF24_Motor_Servo](https://github.com/stanekTM/RX_nRF24_Motor_Servo)
+This RC transmitter works with RC receiver from my repository [**RX_nRF24_Motor_Servo**](https://github.com/stanekTM/RX_nRF24_Motor_Servo)
 
 Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 

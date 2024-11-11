@@ -2,10 +2,9 @@
 Simple surface 5 channel RC transmitter.
 The hardware includes nRF24L01+ transceiver and ATmega328P processor.
 Telemetry monitors receiver voltage using LED indication.
+The code is Arduino.
 
 This RC transmitter works with RC receiver from my repository [**RX_nRF24_Motor_Servo**](https://github.com/stanekTM/RX_nRF24_Motor_Servo)
-
-The code is Arduino.
 
 Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 

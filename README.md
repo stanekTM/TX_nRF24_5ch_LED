@@ -5,9 +5,11 @@ Telemetry monitors receiver voltage using LED indication.
 
 This RC transmitter works with RC receiver from my repository [**RX_nRF24_Motor_Servo**](https://github.com/stanekTM/RX_nRF24_Motor_Servo)
 
+The code is Arduino.
+
 Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 
-## The Arduino firmware includes
+## The firmware includes
 ### LED mode:
 * Normal mode = LED TX is lit
 * TX battery voltage 1S LiPo (4.2V) < TX monitored voltage = TX LED flash at a interval of 0.2s

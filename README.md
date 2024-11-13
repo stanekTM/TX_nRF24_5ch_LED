@@ -1,4 +1,4 @@
-# RC transmitter for cars, ships, tanks and simple model airplanes
+# RC transmitter for cars, boats, tanks and simple model airplanes
 Simple surface 5 channel RC transmitter.
 The hardware includes nRF24L01+ transceiver and ATmega328P processor.
 Telemetry monitors receiver voltage using LED indication.

@@ -29,6 +29,7 @@ const byte address[] = "jirka";
 #define TX_MONITORED_VOLTAGE  3.3
 
 //RX voltage monitoring settings
+#define RX_BATTERY_VOLTAGE    4.2
 #define RX_MONITORED_VOLTAGE  3.49
 
 //setting the control range value
@@ -278,38 +279,50 @@ void send_and_receive_data()
       rx_time = millis();
     }
   }
+  
+  
+/*  
+  if (radio.write(&rc_packet, sizeof(rc_packet_size)))
+  {
+    if (radio.available())
+    {
+      radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
+      
+      RX_batt_check();
+      rx_time = millis();
+    }
+  }
+*/
+
 }
 
 //*********************************************************************************************************************
 //input measurement TX_BATTERY_VOLTAGE < TX_MONITORED_VOLTAGE = LED flash at a interval of 0.2s ***********************
 //Battery OK = LED is lit *********************************************************************************************
 //*********************************************************************************************************************
-float val_TX_battery;
 unsigned long led_time = 0;
-bool led_state;
+bool tx_low_batt = 0, previous_state_batt, led_state;
 
 void TX_batt_check()
 {
-  val_TX_battery = analogRead(PIN_BATTERY) * (TX_BATTERY_VOLTAGE / 1023);
+  tx_low_batt = analogRead(PIN_BATTERY) <= (1023 / TX_BATTERY_VOLTAGE) * TX_MONITORED_VOLTAGE;
   
-  if (val_TX_battery <= TX_MONITORED_VOLTAGE)
+  digitalWrite(PIN_LED, led_state);
+  
+  if (tx_low_batt)
   {
+    previous_state_batt = 1;
+    
     if (millis() - led_time > 200)
     {
       led_time = millis();
       
-      if (led_state)
-      {
-        led_state = 0;
-      }
-      else
-      {
-        led_state = 1;
-      }
-      digitalWrite(PIN_LED, led_state);
+      led_state = !led_state;
     }
   }
-  //Serial.println(val_TX_battery);
+  tx_low_batt = previous_state_batt;
+  
+  //Serial.println(tx_low_batt);
 }
 
 //*********************************************************************************************************************
@@ -317,26 +330,24 @@ void TX_batt_check()
 //RX battery voltage(telemetry_packet.batt_A1) < RX_MONITORED_VOLTAGE = LEDs TX, RX flash at a interval of 0.5s *******
 //Battery OK = LEDs TX, RX is lit *************************************************************************************
 //*********************************************************************************************************************
-bool RX_low_batt_detect = 0;
+bool rx_low_batt = 0;
 
 void RX_batt_check()
 {
-  RX_low_batt_detect = telemetry_packet.batt_A1 <= RX_MONITORED_VOLTAGE;
+  rx_low_batt = telemetry_packet.batt_A1 <= (255 / RX_BATTERY_VOLTAGE) * RX_MONITORED_VOLTAGE;
   
-  if (millis() - led_time > 500)
+  digitalWrite(PIN_LED, led_state);
+
+  if (rx_low_batt)
   {
-    led_time = millis();
-    
-    if (led_state == RX_low_batt_detect)
+    if (millis() - led_time > 500)
     {
-      led_state = 0;
+      led_time = millis();
+      
+      led_state = !led_state;
     }
-    else
-    {
-      led_state = 1;
-    }
-    digitalWrite(PIN_LED, led_state);
   }
+  
   //Serial.println(telemetry_packet.batt_A1);
 }
 
@@ -346,19 +357,13 @@ void RX_batt_check()
 //*********************************************************************************************************************
 void RF_off_check()
 {
+  digitalWrite(PIN_LED, led_state);
+  
   if (millis() - led_time > 100)
   {
     led_time = millis();
     
-    if (led_state)
-    {
-      led_state = 0;
-    }
-    else
-    {
-      led_state = 1;
-    }
-    digitalWrite(PIN_LED, led_state);
+    led_state = !led_state;
   }
 }
  

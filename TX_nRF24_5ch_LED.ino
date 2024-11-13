@@ -1,6 +1,6 @@
 
 //*********************************************************************************************************************
-// RC transmitter for cars, ships, tanks and simple model airplanes
+// RC transmitter for cars, boats, tanks and simple model airplanes
 //******************************************************************
 // Simple surface 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
 //

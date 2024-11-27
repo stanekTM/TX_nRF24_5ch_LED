@@ -18,7 +18,7 @@
 #include <EEPROM.h>   // Arduino standard library
 
 
-//setting RF channels address (5 bytes number or character)
+//setting a unique address (5 bytes number or character)
 const byte address[] = "jirka";
 
 //RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)

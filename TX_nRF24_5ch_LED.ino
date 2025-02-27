@@ -42,9 +42,9 @@ const byte address[] = "jirka";
 //free pins
 //pin                     0
 //pin                     1
+//pin                     2
 //pin                     3
 //pin                     5
-//pin                     6
 //pin                     7
 //pin                     8
 //pin                     A5
@@ -58,7 +58,7 @@ const byte address[] = "jirka";
 //pot5                    A4
 
 //LED battery and RF on/off
-#define PIN_LED           2
+#define PIN_LED           6
 
 //calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
 #define PIN_BUTTON_CALIB  4
@@ -214,8 +214,6 @@ unsigned int EEPROMReadInt(int p_address)
 //*********************************************************************************************************************
 //initial main settings ***********************************************************************************************
 //*********************************************************************************************************************
-const byte invert_address = ~address[5]; //invert bits for reading so that telemetry packets have a different address
-
 void setup()
 {
   //Serial.begin(9600); //print value on a serial monitor
@@ -223,7 +221,7 @@ void setup()
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_BATTERY, INPUT);
   pinMode(PIN_BUTTON_CALIB, INPUT_PULLUP);
-
+  
   calibrate_pots();
   
   //define the radio communication
@@ -237,7 +235,6 @@ void setup()
   radio.setPALevel(RF24_PA_MIN); //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
   radio.stopListening();
   radio.openWritingPipe(address);
-  radio.openReadingPipe(1, invert_address);
 }
 
 //*********************************************************************************************************************
@@ -271,19 +268,6 @@ void send_and_receive_data()
 {
   if (radio.write(&rc_packet, sizeof(rc_packet_size)))
   {
-    if (radio.isAckPayloadAvailable())
-    {
-      radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
-      
-      RX_batt_check();
-      rx_time = millis();
-    }
-  }
-  
-  
-/*  
-  if (radio.write(&rc_packet, sizeof(rc_packet_size)))
-  {
     if (radio.available())
     {
       radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
@@ -292,8 +276,6 @@ void send_and_receive_data()
       rx_time = millis();
     }
   }
-*/
-
 }
 
 //*********************************************************************************************************************

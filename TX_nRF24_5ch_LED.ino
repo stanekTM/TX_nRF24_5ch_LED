@@ -18,68 +18,68 @@
 #include <EEPROM.h>   // Arduino standard library
 
 
-//setting a unique address (5 bytes number or character)
+// Setting a unique address (5 bytes number or character)
 const byte address[] = "jirka";
 
-//RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
+// RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
 #define RADIO_CHANNEL         76
 
-//TX battery voltage settings
+// TX battery voltage settings
 #define TX_BATTERY_VOLTAGE    4.2
 #define TX_MONITORED_VOLTAGE  3.3
 
-//RX voltage monitoring settings
+// RX voltage monitoring settings
 #define RX_BATTERY_VOLTAGE    4.2
 #define RX_MONITORED_VOLTAGE  3.49
 
-//setting the control range value
+// Setting the control range value
 #define MIN_CONTROL_VAL       1000
 #define MID_CONTROL_VAL       1500
 #define MAX_CONTROL_VAL       2000
 #define EPA_POSITIVE          500
 #define EPA_NEGATIVE         -500
 
-//free pins
-//pin                     0
-//pin                     1
-//pin                     2
-//pin                     3
-//pin                     5
-//pin                     7
-//pin                     8
-//pin                     A5
-//pin                     A6
+// Free pins
+// Pin                    0
+// Pin                    1
+// Pin                    2
+// Pin                    3
+// Pin                    5
+// Pin                    7
+// Pin                    8
+// Pin                    A5
+// Pin                    A6
 
-//pins for pots, joysticks
-//pot1                    A0
-//pot2                    A1
-//pot3                    A2
-//pot4                    A3
-//pot5                    A4
+// Pins for pots, joysticks
+// Pot1                   A0
+// Pot2                   A1
+// Pot3                   A2
+// Pot4                   A3
+// Pot5                   A4
 
-//LED battery and RF on/off
+// LED battery and RF on/off
 #define PIN_LED           6
 
-//calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
+// Calibration button
 #define PIN_BUTTON_CALIB  4
 
-//input battery
+// Input battery
 #define PIN_BATTERY       A7
 
-//pins for nRF24L01
+// Pins for nRF24L01
 #define PIN_CE            9
 #define PIN_CSN           10
 
-//hardware SPI
+// Hardware SPI
 //----- MOSI              11
 //----- MISO              12
 //----- SCK               13
 
-//setting of CE and CSN pins
+// Setting of CE and CSN pins
 RF24 radio(PIN_CE, PIN_CSN);
 
 //*********************************************************************************************************************
-//this structure defines the sent data in bytes ***********************************************************************
+// This structure defines the data sent (max 32 bytes)
 //*********************************************************************************************************************
 struct rc_packet_size
 {
@@ -92,18 +92,18 @@ struct rc_packet_size
 rc_packet_size rc_packet;
 
 //*********************************************************************************************************************
-//this struct defines data, which are embedded inside the ACK payload *************************************************
+// This structure defines the received ACK payload data
 //*********************************************************************************************************************
 struct telemetry_packet_size
 {
-  byte rssi;     //not used yet
+  byte rssi;     // Not used yet
   float batt_A1;
-  float batt_A2; //not used yet
+  float batt_A2; // Not used yet
 };
 telemetry_packet_size telemetry_packet;
 
 //*********************************************************************************************************************
-//read pots, joysticks ************************************************************************************************
+// Read pots, joysticks
 //*********************************************************************************************************************
 int ch, raw_pots;
 int pot_calib_min[] = {0, 0, 0, 0, 0};
@@ -117,31 +117,33 @@ void read_pots()
   for (ch = 0; ch < 5; ch++)
   {
     raw_pots = analogRead(ch);
+
     if (raw_pots > pot_calib_mid[ch])
     pots_value[ch] = map(raw_pots, pot_calib_mid[ch], pot_calib_min[ch], 0, EPA_POSITIVE);
     else
     pots_value[ch] = map(raw_pots, pot_calib_max[ch], pot_calib_mid[ch], EPA_NEGATIVE, 0);
   }
   
-  // format the frame
+  // Format the frame
   for (ch = 0; ch < 5; ch++)
   {
     pots_value[ch] += MID_CONTROL_VAL;
     pots_value[ch] = constrain(pots_value[ch], MIN_CONTROL_VAL, MAX_CONTROL_VAL);
+
     if (reverse[ch] == 1) pots_value[ch] = 3000 - pots_value[ch];
   }
   
-  rc_packet.ch1 = pots_value[0]; //A0
-  rc_packet.ch2 = pots_value[1]; //A1
-  rc_packet.ch3 = pots_value[2]; //A2
-  rc_packet.ch4 = pots_value[3]; //A3
-  rc_packet.ch5 = pots_value[4]; //A4
+  rc_packet.ch1 = pots_value[0]; // A0
+  rc_packet.ch2 = pots_value[1]; // A1
+  rc_packet.ch3 = pots_value[2]; // A2
+  rc_packet.ch4 = pots_value[3]; // A3
+  rc_packet.ch5 = pots_value[4]; // A4
   
   //Serial.println(rc_packet.ch1);
 }
 
 //*********************************************************************************************************************
-//calibrate pots, joysticks *******************************************************************************************
+// Calibrate pots, joysticks
 //*********************************************************************************************************************
 int calibrated = 1;
 
@@ -150,48 +152,49 @@ void calibrate_pots()
   while (digitalRead(PIN_BUTTON_CALIB) == 0)
   {
     calibrated = 0;
+
     for (int pot = 0; pot < 5; ++pot)
     {
       raw_pots = analogRead(pot);
       if (raw_pots > pot_calib_min[pot]) pot_calib_min[pot] = raw_pots;
       if (raw_pots < pot_calib_max[pot]) pot_calib_max[pot] = raw_pots;
-      pot_calib_mid[pot] = raw_pots;  //save neutral pots, joysticks as button is released
+      pot_calib_mid[pot] = raw_pots; // Save neutral pots, joysticks as button is released
     }
-  }   //calibrate button released
+  } // Calibrate button released
   
   if (calibrated == 0)
   {
     for (ch = 0; ch < 5; ch++)
     {
-      EEPROMWriteInt(ch * 6,     pot_calib_max[ch]); //eeprom locations  0,  6, 12, 18 (decimal)
-      EEPROMWriteInt(ch * 6 + 2, pot_calib_mid[ch]); //eeprom locations  2,  8, 14, 20 (decimal)
-      EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); //eeprom locations  4, 10, 16, 22 (decimal)
+      EEPROMWriteInt(ch * 6,     pot_calib_max[ch]); // EEPROM locations  0,  6, 12, 18 (decimal)
+      EEPROMWriteInt(ch * 6 + 2, pot_calib_mid[ch]); // EEPROM locations  2,  8, 14, 20 (decimal)
+      EEPROMWriteInt(ch * 6 + 4, pot_calib_min[ch]); // EEPROM locations  4, 10, 16, 22 (decimal)
     }
     calibrated = 1;
   }
   
   for (ch = 0; ch < 5; ch++)
   {
-    pot_calib_max[ch] = EEPROMReadInt(ch * 6);     //eeprom locations  0,  6, 12, 18 (decimal)
-    pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); //eeprom locations  2,  8, 14, 20 (decimal)
-    pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); //eeprom locations  4, 10, 16, 22 (decimal)
-    reverse[ch] = EEPROM.read(ch + 30) & 1;        //eeprom locations 30, 31, 32, 33 (decimal), ch * 6 = 30
+    pot_calib_max[ch] = EEPROMReadInt(ch * 6);     // EEPROM locations  0,  6, 12, 18 (decimal)
+    pot_calib_mid[ch] = EEPROMReadInt(ch * 6 + 2); // EEPROM locations  2,  8, 14, 20 (decimal)
+    pot_calib_min[ch] = EEPROMReadInt(ch * 6 + 4); // EEPROM locations  4, 10, 16, 22 (decimal)
+    reverse[ch] = EEPROM.read(ch + 30) & 1;        // EEPROM locations 30, 31, 32, 33 (decimal), ch * 6 = 30
   }
   
-  //check for reversing, stick over on power-up
+  // Check for reversing, stick over on power-up
   for (ch = 0; ch < 5; ch++)
   {
     pots_value[ch] = map(analogRead(ch), pot_calib_max[ch], pot_calib_min[ch], EPA_NEGATIVE, EPA_POSITIVE);
     if (pots_value[ch] > EPA_POSITIVE - 50 || pots_value[ch] < EPA_NEGATIVE + 50)
     {
       reverse[ch] ^= B00000001;
-      EEPROM.write(30 + ch, reverse[ch]); //ch * 6 = 30
+      EEPROM.write(30 + ch, reverse[ch]); // ch * 6 = 30
     }
   }
 }
 
 //*********************************************************************************************************************
-//this function will write a 2 byte integer to the eeprom at the specified address and address + 1 ********************
+// This function will write a 2 byte integer to the eeprom at the specified address and address + 1
 //*********************************************************************************************************************
 void EEPROMWriteInt(int p_address, int p_value)
 {
@@ -202,7 +205,7 @@ void EEPROMWriteInt(int p_address, int p_value)
 }
 
 //*********************************************************************************************************************
-//this function will read a 2 byte integer from the eeprom at the specified address and address + 1 *******************
+// This function will read a 2 byte integer from the eeprom at the specified address and address + 1
 //*********************************************************************************************************************
 unsigned int EEPROMReadInt(int p_address)
 {
@@ -212,11 +215,11 @@ unsigned int EEPROMReadInt(int p_address)
 }
 
 //*********************************************************************************************************************
-//initial main settings ***********************************************************************************************
+// Program setup
 //*********************************************************************************************************************
 void setup()
 {
-  //Serial.begin(9600); //print value on a serial monitor
+  //Serial.begin(9600);
   
   pinMode(PIN_LED, OUTPUT);
   pinMode(PIN_BATTERY, INPUT);
@@ -224,7 +227,7 @@ void setup()
   
   calibrate_pots();
   
-  //define the radio communication
+  // Define the radio communication
   radio.begin();
   radio.setAutoAck(true);
   radio.enableAckPayload();
@@ -232,13 +235,13 @@ void setup()
   radio.setRetries(5, 5);
   radio.setChannel(RADIO_CHANNEL);
   radio.setDataRate(RF24_250KBPS);
-  radio.setPALevel(RF24_PA_MIN); //RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
+  radio.setPALevel(RF24_PA_MIN); // RF24_PA_MIN (-18dBm), RF24_PA_LOW (-12dBm), RF24_PA_HIGH (-6dbm), RF24_PA_MAX (0dBm)
   radio.stopListening();
   radio.openWritingPipe(address);
 }
 
 //*********************************************************************************************************************
-//program loop ********************************************************************************************************
+// Program loop
 //*********************************************************************************************************************
 void loop()
 {
@@ -249,20 +252,20 @@ void loop()
 }
 
 //*********************************************************************************************************************
-//after losing RF data or turning off the RX, gain time and the LED flashing ******************************************
+// If we lose RF data for 1 second, the TX LED will flash
 //*********************************************************************************************************************
 unsigned long rx_time = 0;
 
 void receive_time()
 {
-  if (millis() - rx_time > 1000) //after 1 second
+  if (millis() - rx_time > 1000)
   {
     RF_off_check();
   }
 }
 
 //*********************************************************************************************************************
-//send and receive data ***********************************************************************************************
+// Send and receive data
 //*********************************************************************************************************************
 void send_and_receive_data()
 {
@@ -279,8 +282,7 @@ void send_and_receive_data()
 }
 
 //*********************************************************************************************************************
-//input measurement TX_BATTERY_VOLTAGE < TX_MONITORED_VOLTAGE = LED flash at a interval of 0.2s ***********************
-//Battery OK = LED is lit *********************************************************************************************
+// If the TX battery is low, the TX LED flashes at 0.2s interval. Normal mode, LED TX is lit
 //*********************************************************************************************************************
 unsigned long led_time = 0;
 bool tx_low_batt = 0, previous_state_batt, led_state;
@@ -308,9 +310,7 @@ void TX_batt_check()
 }
 
 //*********************************************************************************************************************
-//after receiving RF data, the monitored RX battery is activated ******************************************************
-//RX battery voltage(telemetry_packet.batt_A1) < RX_MONITORED_VOLTAGE = LEDs TX, RX flash at a interval of 0.5s *******
-//Battery OK = LEDs TX, RX is lit *************************************************************************************
+// If the RX battery is low, the TX LED flashes at 0.5s interval. Normal mode, LED TX is lit
 //*********************************************************************************************************************
 bool rx_low_batt = 0;
 
@@ -334,8 +334,7 @@ void RX_batt_check()
 }
 
 //*********************************************************************************************************************
-//when TX is switched on and RX is switched off, or after the loss of RF data = LED TX flash at a interval of 0.1s ****
-//Normal mode = LED TX is lit *****************************************************************************************
+// If we lose RF data, the TX LED flashes at 0.1s interval. Normal mode, LED TX is lit
 //*********************************************************************************************************************
 void RF_off_check()
 {

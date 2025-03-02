@@ -13,9 +13,9 @@
 //*********************************************************************************************************************
 
 
-#include <RF24.h>     // https://github.com/nRF24/RF24
-#include <SPI.h>      // Arduino standard library
-#include <EEPROM.h>   // Arduino standard library
+#include <RF24.h>   // https://github.com/nRF24/RF24
+#include <SPI.h>    // Arduino standard library
+#include <EEPROM.h> // Arduino standard library
 
 
 // Setting a unique address (5 bytes number or character)
@@ -246,7 +246,7 @@ void setup()
 void loop()
 {
   read_pots();
-  receive_time();
+  RF_off_timeout();
   send_and_receive_data();
   TX_batt_check();
 }
@@ -254,11 +254,11 @@ void loop()
 //*********************************************************************************************************************
 // If we lose RF data for 1 second, the TX LED will flash
 //*********************************************************************************************************************
-unsigned long rx_time = 0;
+unsigned long rf_timeout = 0;
 
-void receive_time()
+void RF_off_timeout()
 {
-  if (millis() - rx_time > 1000)
+  if (millis() - rf_timeout > 1000)
   {
     RF_off_check();
   }
@@ -276,7 +276,7 @@ void send_and_receive_data()
       radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
       
       RX_batt_check();
-      rx_time = millis();
+      rf_timeout = millis();
     }
   }
 }
@@ -285,7 +285,7 @@ void send_and_receive_data()
 // If the TX battery is low, the TX LED flashes at 0.2s interval. Normal mode, LED TX is lit
 //*********************************************************************************************************************
 unsigned long led_time = 0;
-bool tx_low_batt = 0, previous_state_batt, led_state;
+bool tx_low_batt = 0, previous_state_batt, led_state, RF_led_state;
 
 void TX_batt_check()
 {
@@ -338,13 +338,13 @@ void RX_batt_check()
 //*********************************************************************************************************************
 void RF_off_check()
 {
-  digitalWrite(PIN_LED, led_state);
+  digitalWrite(PIN_LED, RF_led_state);
   
   if (millis() - led_time > 100)
   {
     led_time = millis();
     
-    led_state = !led_state;
+    RF_led_state = !RF_led_state;
   }
 }
  

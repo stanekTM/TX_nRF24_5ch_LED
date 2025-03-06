@@ -29,8 +29,8 @@ A2 - joystick 3
 A3 - joystick 4
 A4 - potentiometer 5
 
+D4 - calibration button
 D6 - LED
-D4 - calibration button (I had to add a 10k resistor -> VCC even when the internal INPUT_PULLUP is activated)
 A7 - input TX battery
 
 nRF24L01:

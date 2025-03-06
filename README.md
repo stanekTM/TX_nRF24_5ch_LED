@@ -10,10 +10,10 @@ Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and rev
 
 ## The firmware includes
 ### LED mode:
-* Normal mode = LED TX is lit
-* TX battery voltage 1S LiPo (4.2V) < TX monitored voltage = TX LED flash at a interval of 0.2s
-* RX battery voltage 1S LiPo (4.2V) < RX monitored voltage = TX, RX LEDs flash at a interval of 0.5s
-* RX receiver off or signal loss = TX LED flash at a interval of 0.1s
+* Normal mode, LED TX is lit
+* If the TX battery is low, the TX LED blink at 0.5s interval
+* If the RX battery is low, the TX LED blink at 0.3s interval
+* If we lose RF data for 1 second, the TX LED blink at 0.1s interval
 ### Calibration:
 * Hold calibration button, switch transmitter TX on, still holding calibration button move all controls to extremes including auxilliary pots.
 * Center all controls and aux pots.

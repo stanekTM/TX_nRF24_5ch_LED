@@ -24,11 +24,11 @@ const byte address[] = "jirka";
 // RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
 #define RADIO_CHANNEL         76
 
-// TX battery voltage settings
+// TX alarm voltage setting
 #define TX_BATTERY_VOLTAGE    4.2
 #define TX_MONITORED_VOLTAGE  3.3
 
-// RX battery voltage settings
+// RX alarm voltage setting
 #define RX_BATTERY_VOLTAGE    4.2
 #define RX_MONITORED_VOLTAGE  3.49
 
@@ -57,7 +57,7 @@ const byte address[] = "jirka";
 // Pot4                   A3
 // Pot5                   A4
 
-// LED battery and RF on/off
+// LED alarm
 #define PIN_LED           6
 
 // Calibration button

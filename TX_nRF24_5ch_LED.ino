@@ -28,7 +28,7 @@ const byte address[] = "jirka";
 #define TX_BATTERY_VOLTAGE    4.2
 #define TX_MONITORED_VOLTAGE  3.3
 
-// RX voltage monitoring settings
+// RX battery voltage settings
 #define RX_BATTERY_VOLTAGE    4.2
 #define RX_MONITORED_VOLTAGE  3.49
 
@@ -246,27 +246,17 @@ void setup()
 void loop()
 {
   read_pots();
-  RF_off_timeout();
   send_and_receive_data();
-  TX_batt_check();
-}
-
-//*********************************************************************************************************************
-// If we lose RF data for 1 second, the TX LED will flash
-//*********************************************************************************************************************
-unsigned long rf_timeout = 0;
-
-void RF_off_timeout()
-{
-  if (millis() - rf_timeout > 1000)
-  {
-    RF_off_check();
-  }
+  TX_batt_monitoring();
+  RX_batt_monitoring();
+  led_mode();
 }
 
 //*********************************************************************************************************************
 // Send and receive data
 //*********************************************************************************************************************
+unsigned long rf_timeout = 0;
+
 void send_and_receive_data()
 {
   if (radio.write(&rc_packet, sizeof(rc_packet_size)))
@@ -275,76 +265,73 @@ void send_and_receive_data()
     {
       radio.read(&telemetry_packet, sizeof(telemetry_packet_size));
       
-      RX_batt_check();
       rf_timeout = millis();
     }
   }
 }
 
 //*********************************************************************************************************************
-// If the TX battery is low, the TX LED flashes at 0.2s interval. Normal mode, LED TX is lit
+// TX battery voltage monitoring
 //*********************************************************************************************************************
-unsigned long led_time = 0;
-bool tx_low_batt = 0, previous_state_batt, led_state, RF_led_state;
+bool tx_low_batt = 0;
 
-void TX_batt_check()
+void TX_batt_monitoring()
 {
   tx_low_batt = analogRead(PIN_BATTERY) <= (1023 / TX_BATTERY_VOLTAGE) * TX_MONITORED_VOLTAGE;
-  
-  digitalWrite(PIN_LED, led_state);
-  
-  if (tx_low_batt)
-  {
-    previous_state_batt = 1;
-    
-    if (millis() - led_time > 200)
-    {
-      led_time = millis();
-      
-      led_state = !led_state;
-    }
-  }
-  tx_low_batt = previous_state_batt;
   
   //Serial.println(tx_low_batt);
 }
 
 //*********************************************************************************************************************
-// If the RX battery is low, the TX LED flashes at 0.5s interval. Normal mode, LED TX is lit
+// RX battery voltage monitoring
 //*********************************************************************************************************************
 bool rx_low_batt = 0;
 
-void RX_batt_check()
+void RX_batt_monitoring()
 {
   rx_low_batt = telemetry_packet.batt_A1 <= (255 / RX_BATTERY_VOLTAGE) * RX_MONITORED_VOLTAGE;
-  
-  digitalWrite(PIN_LED, led_state);
-
-  if (rx_low_batt)
-  {
-    if (millis() - led_time > 500)
-    {
-      led_time = millis();
-      
-      led_state = !led_state;
-    }
-  }
   
   //Serial.println(telemetry_packet.batt_A1);
 }
 
 //*********************************************************************************************************************
-// If we lose RF data, the TX LED flashes at 0.1s interval. Normal mode, LED TX is lit
+// LED blink mode
 //*********************************************************************************************************************
-void RF_off_check()
+void led_mode()
 {
-  digitalWrite(PIN_LED, RF_led_state);
-  
-  if (millis() - led_time > 100)
+  if (millis() - rf_timeout > 1000) // If we lose RF data for 1 second, the TX LED blink at 0.1s interval
+  {
+    blink(PIN_LED, 100);
+  }
+  else if (rx_low_batt) // If the RX battery is low, the TX LED blink at 0.3s interval
+  {
+    blink(PIN_LED, 300);
+  }
+  else if (tx_low_batt) // If the TX battery is low, the TX LED blink at 0.5s interval
+  {
+    blink(PIN_LED, 500);
+  }
+  else
+  {
+    digitalWrite(PIN_LED, HIGH); // Normal mode, LED TX is lit
+  }
+}
+
+//*********************************************************************************************************************
+// LED blink function
+//*********************************************************************************************************************
+unsigned long led_time = 0;
+bool led_state;
+
+void blink(uint8_t pin, uint16_t interval)
+{
+  if (millis() - led_time > interval)
   {
     led_time = millis();
     
-    RF_led_state = !RF_led_state;
+    led_state = !led_state;
+    
+    digitalWrite(pin, led_state);
   }
 }
  

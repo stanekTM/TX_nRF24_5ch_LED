@@ -12,7 +12,6 @@
 // Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
 //*********************************************************************************************************************
 
-
 #include <RF24.h>   // https://github.com/nRF24/RF24
 #include <SPI.h>    // Arduino standard library
 #include <EEPROM.h> // Arduino standard library
@@ -97,7 +96,7 @@ rc_packet_size rc_packet;
 struct telemetry_packet_size
 {
   byte rssi;    // Not used yet
-  byte batt_A1;
+  byte batt_A1 = 255;
   byte batt_A2; // Not used yet
 };
 telemetry_packet_size telemetry_packet;
@@ -249,7 +248,7 @@ void loop()
   send_and_receive_data();
   TX_batt_monitoring();
   RX_batt_monitoring();
-  led_mode();
+  LED_mode();
 }
 
 //*********************************************************************************************************************
@@ -286,10 +285,18 @@ void TX_batt_monitoring()
 // RX battery voltage monitoring
 //*********************************************************************************************************************
 bool rx_low_batt = 0;
+bool previous_state_batt;
 
 void RX_batt_monitoring()
 {
   rx_low_batt = telemetry_packet.batt_A1 <= (255 / RX_BATTERY_VOLTAGE) * RX_MONITORED_VOLTAGE;
+  
+  // Battery alarm lock
+  if (rx_low_batt)
+  {
+    previous_state_batt = 1;
+  }
+  rx_low_batt = previous_state_batt;
   
   //Serial.println(telemetry_packet.batt_A1);
 }
@@ -297,7 +304,7 @@ void RX_batt_monitoring()
 //*********************************************************************************************************************
 // LED blink mode
 //*********************************************************************************************************************
-void led_mode()
+void LED_mode()
 {
   if (millis() - rf_timeout > 1000) // If we lose RF data for 1 second, the TX LED blink at 0.1s interval
   {

@@ -306,21 +306,21 @@ void RX_batt_monitoring()
 //*********************************************************************************************************************
 void LED_mode()
 {
-  if (millis() - rf_timeout > 1000) // If we lose RF data for 1 second, the TX LED blink at 0.1s interval
+  if (millis() - rf_timeout > 1000) // If we lose RF data for 1 second, the LED blink at 0.1s interval
   {
     blink(PIN_LED, 100);
   }
-  else if (rx_low_batt) // If the RX battery is low, the TX LED blink at 0.3s interval
+  else if (rx_low_batt) // If the RX battery is low, the LED blink at 0.3s interval
   {
     blink(PIN_LED, 300);
   }
-  else if (tx_low_batt) // If the TX battery is low, the TX LED blink at 0.5s interval
+  else if (tx_low_batt) // If the TX battery is low, the LED blink at 0.5s interval
   {
     blink(PIN_LED, 500);
   }
   else
   {
-    digitalWrite(PIN_LED, HIGH); // Normal mode, LED TX is lit
+    digitalWrite(PIN_LED, HIGH); // Normal mode, LED is lit
   }
 }
 

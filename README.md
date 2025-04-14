@@ -1,5 +1,5 @@
-# RC transmitter for cars, boats, tanks and simple model airplanes
-Simple surface 5 channel RC transmitter.
+# RC transmitter
+Simple 5 channel RC transmitter.
 Includes nRF24L01+ transceiver and ATmega328P processor.
 Telemetry monitors receiver voltage using LED indication.
 The code is Arduino.

@@ -1,8 +1,8 @@
 
 //*********************************************************************************************************************
-// RC transmitter for cars, boats, tanks and simple model airplanes
-//******************************************************************
-// Simple surface 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
+// RC transmitter
+//****************
+// Simple 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
 //
 // Includes nRF24L01+ transceiver and ATmega328P processor.
 // Telemetry monitors receiver voltage using LED indication. The code is Arduino.

@@ -4,9 +4,6 @@
 //****************
 // Simple 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
 //
-// Includes nRF24L01+ transceiver and ATmega328P processor.
-// Telemetry monitors receiver voltage using LED indication. The code is Arduino.
-//
 // This RC transmitter works with RC receiver from my repository https://github.com/stanekTM/RX_nRF24_Motor_Servo
 //
 // Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.

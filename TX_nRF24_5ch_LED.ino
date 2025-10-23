@@ -22,11 +22,11 @@ const byte address[] = "jirka";
 
 // TX alarm voltage setting
 #define TX_BATTERY_VOLTAGE    4.2
-#define TX_MONITORED_VOLTAGE  3.3
+#define TX_MONITORED_VOLTAGE  3.45
 
 // RX alarm voltage setting
 #define RX_BATTERY_VOLTAGE    4.2
-#define RX_MONITORED_VOLTAGE  3.49
+#define RX_MONITORED_VOLTAGE  3.45
 
 // Setting the control range value
 #define MIN_CONTROL_VAL       1000

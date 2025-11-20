@@ -6,7 +6,7 @@
   
   This RC transmitter works with RC receiver from my repository https://github.com/stanekTM/RX_nRF24_Motor_Servo
   
-  Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
+  Thanks to "Phil_G" http://www.singlechannel.co.uk for the calibration and reversal routine used in the code.
   ****************************************************************************************************************
 */
 

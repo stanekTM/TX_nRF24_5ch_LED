@@ -1,23 +1,24 @@
+/*
+  ****************************************************************************************************************
+  RC transmitter
+  **************
+  Simple 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
+  
+  This RC transmitter works with RC receiver from my repository https://github.com/stanekTM/RX_nRF24_Motor_Servo
+  
+  Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
+  ****************************************************************************************************************
+*/
 
-//*********************************************************************************************************************
-// RC transmitter
-//****************
-// Simple 5 channel RC transmitter from my repository https://github.com/stanekTM/TX_nRF24_5ch_LED
-//
-// This RC transmitter works with RC receiver from my repository https://github.com/stanekTM/RX_nRF24_Motor_Servo
-//
-// Thank you to "Phil_G" http://www.singlechannel.co.uk for the calibration and reverse routine I used in the code.
-//*********************************************************************************************************************
-
-#include <RF24.h>   // https://github.com/nRF24/RF24
-#include <SPI.h>    // Arduino standard library
-#include <EEPROM.h> // Arduino standard library
+#include <RF24.h> // v1.4.11
+#include <SPI.h>
+#include <EEPROM.h>
 
 
 // Setting a unique address (5 bytes number or character)
 const byte address[] = "jirka";
 
-// RF communication channel settings (0-125, 2.4Ghz + 76 = 2.476Ghz)
+// RF communication channel setting (0-125, 2.4Ghz + 76 = 2.476Ghz)
 #define RADIO_CHANNEL         76
 
 // TX alarm voltage setting
@@ -62,7 +63,7 @@ const byte address[] = "jirka";
 // Input battery
 #define PIN_BATTERY       A7
 
-// Pins for nRF24L01
+// Pins for nRF24L01+
 #define PIN_CE            9
 #define PIN_CSN           10
 
@@ -71,7 +72,7 @@ const byte address[] = "jirka";
 //----- MISO              12
 //----- SCK               13
 
-// Setting of CE and CSN pins
+// nRF24 class driver
 RF24 radio(PIN_CE, PIN_CSN);
 
 //*********************************************************************************************************************

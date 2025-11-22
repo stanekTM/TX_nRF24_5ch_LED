@@ -40,8 +40,3 @@ D11 - MOSI
 D12 - MISO
 D13 - SCK
 ```
-
-## Used libraries
-* <RF24.h>   https://github.com/nRF24/RF24
-* <EEPROM.h> Arduino standard library
-* <SPI.h>    Arduino standard library

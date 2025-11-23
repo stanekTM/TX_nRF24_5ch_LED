@@ -10,9 +10,9 @@
   ****************************************************************************************************************
 */
 
-#include <RF24.h> // v1.4.11
-#include <SPI.h>
-#include <EEPROM.h>
+#include "RF24.h" // v1.4.11
+#include "SPI.h"
+#include "EEPROM.h"
 
 
 // Setting a unique address (5 bytes number or character)

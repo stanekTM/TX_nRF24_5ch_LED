@@ -10,10 +10,11 @@
   ****************************************************************************************************************
 */
 
-#include "RF24.h" // v1.4.11
-#include "SPI.h"
-#include "EEPROM.h"
-
+#include <RF24.h> // v1.4.11
+#include <RF24_config.h>
+#include <nRF24L01.h>
+#include <SPI.h>
+#include <EEPROM.h>
 
 // Setting a unique address (5 bytes number or character)
 const byte address[] = "jirka";

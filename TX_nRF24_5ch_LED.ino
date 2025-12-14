@@ -101,11 +101,11 @@ RF24 radio(PIN_CE, PIN_CSN);
 //*********************************************************************************************************************
 struct rc_packet_size
 {
-  unsigned int ch1;
-  unsigned int ch2;
-  unsigned int ch3;
-  unsigned int ch4;
-  unsigned int ch5;
+  unsigned int ch1; // A0
+  unsigned int ch2; // A1
+  unsigned int ch3; // A2
+  unsigned int ch4; // A3
+  unsigned int ch5; // A4
 };
 rc_packet_size rc_packet;
 

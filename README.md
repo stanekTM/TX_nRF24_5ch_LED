@@ -1,5 +1,5 @@
 # RC transmitter
-Simple 5 channel RC transmitter.
+Simple 4 channel RC transmitter.
 Includes nRF24L01+ transceiver and ATmega328P processor.
 Telemetry monitors receiver voltage using LED indication.
 The code is Arduino.
@@ -27,7 +27,6 @@ A0 - joystick 1
 A1 - joystick 2
 A2 - joystick 3
 A3 - joystick 4
-A4 - potentiometer 5
 
 D4 - calibration button
 D6 - LED

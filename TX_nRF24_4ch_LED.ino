@@ -66,11 +66,10 @@ const byte address[] = "jirka";
 // ADC7   -    A7
 
 // Pins for pots, joysticks
-// Pot1                   A0
-// Pot2                   A1
-// Pot3                   A2
-// Pot4                   A3
-// Pot5                   A4
+// Joystick 1             A0
+// Joystick 2             A1
+// Joystick 3             A2
+// Joystick 4             A3
 
 // LED alarm
 #define PIN_LED           6

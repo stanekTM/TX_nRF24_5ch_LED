@@ -22,13 +22,12 @@ const byte address[] = "jirka";
 // RF communication channel setting (0-125, 2.4Ghz + 76 = 2.476Ghz)
 #define RADIO_CHANNEL         76
 
-// TX alarm voltage setting
-#define TX_BATTERY_VOLTAGE    4.2
-#define TX_MONITORED_VOLTAGE  3.45
+// TX/RX alarm voltage setting
+#define TX_BATTERY_VOLTAGE    4.2  // Maximum nominal battery voltage
+#define TX_MONITORED_VOLTAGE  3.45 // Minimum battery voltage for alarm
 
-// RX alarm voltage setting
-#define RX_BATTERY_VOLTAGE    4.2
-#define RX_MONITORED_VOLTAGE  3.45
+#define RX_BATTERY_VOLTAGE    4.2  // Maximum nominal battery voltage
+#define RX_MONITORED_VOLTAGE  3.45 // Minimum battery voltage for alarm
 
 // Full deflection of pots
 #define EPA_POSITIVE          500
